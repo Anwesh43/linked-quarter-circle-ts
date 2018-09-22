@@ -17,6 +17,7 @@ class LinkedQuarterCircleStage {
     render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.context.fillStyle = '#4527A0'
         this.lqc.draw(this.context)
     }
 
@@ -27,6 +28,7 @@ class LinkedQuarterCircleStage {
                     this.render()
                     this.lqc.update(() => {
                         this.animator.stop()
+                        this.render()
                     })
                 })
             })
@@ -35,6 +37,7 @@ class LinkedQuarterCircleStage {
 
     static init() {
         const stage : LinkedQuarterCircleStage = new LinkedQuarterCircleStage()
+        stage.initCanvas()
         stage.render()
         stage.handleTap()
     }
@@ -122,19 +125,19 @@ class QCNode {
             context.save()
             context.rotate(deg * j)
             context.beginPath()
+            context.moveTo(0, 0)
             for (var t = 0; t <= 90 * sc; t++) {
                 const xa : number = r * Math.cos(t * Math.PI/180)
                 const ya : number = r * Math.sin(t * Math.PI/180)
-                if (t == 0) {
-                    context.moveTo(xa, ya)
-                } else {
-                    context.lineTo(xa, ya)
-                }
+                context.lineTo(xa, ya)
                 context.fill()
             }
             context.restore()
         }
         context.restore()
+        if (this.prev) {
+            this.prev.draw(context)
+        }
     }
 
     update(cb : Function) {
