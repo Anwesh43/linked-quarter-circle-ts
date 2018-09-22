@@ -49,21 +49,26 @@ class State {
     dir : number = 0
     prevScale : number = 0
     t : number = 0
+    n : number = 1
     update(cb : Function) {
         if (this.t == 0) {
             this.scale += (0.1 / k) * this.dir
-            if (Math.abs(this.scale - this.prevScale) > 1) {
+            if (Math.abs(this.scale - this.prevScale) > this.n * 0.25) {
                 this.t++
+                this.n+=this.dir
             }
         }
         else {
             this.t++
             if (this.t == DELAY) {
-                this.scale = this.prevScale + this.dir
-                this.dir = 0
-                this.prevScale = this.scale
-                cb(this.prevScale)
                 this.t = 0
+                if (this.n == k  || this.n == 0) {
+                    this.n -= this.dir
+                    this.scale = this.prevScale + this.dir
+                    this.dir = 0
+                    this.prevScale = this.scale
+                    cb(this.prevScale)
+                }
             }
         }
     }
