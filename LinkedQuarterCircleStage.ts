@@ -53,22 +53,26 @@ class State {
     update(cb : Function) {
         if (this.t == 0) {
             this.scale += (0.1 / k) * this.dir
-            if (Math.abs(this.scale - this.prevScale) > this.n * 0.25) {
-                this.t++
-                this.n+=this.dir
-            }
-        }
-        else {
-            this.t++
-            if (this.t == DELAY) {
-                this.t = 0
+            const conditionPos = this.dir == 1 && Math.abs(this.scale - this.prevScale) > this.n * 0.25
+            const conditionNeg = this.dir == -1 && Math.abs(this.scale - this.prevScale) < this.n * 0.25
+            if (conditionPos || conditionNeg) {
                 if (this.n == k  || this.n == 0) {
                     this.n -= this.dir
                     this.scale = this.prevScale + this.dir
                     this.dir = 0
                     this.prevScale = this.scale
                     cb(this.prevScale)
+                    this.t = 0
+                } else {
+                    this.t++
+                    this.n+=this.dir
                 }
+            }
+        }
+        else {
+            this.t++
+            if (this.t == DELAY) {
+                this.t = 0
             }
         }
     }
