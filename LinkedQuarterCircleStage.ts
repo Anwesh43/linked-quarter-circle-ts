@@ -4,6 +4,8 @@ const k = 4
 class LinkedQuarterCircleStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
+    animator : Animator = new Animator()
+    lqc : LinkedQuarterCircle = new LinkedQuarterCircle()
 
     initCanvas() {
         this.canvas.width = w
@@ -15,11 +17,19 @@ class LinkedQuarterCircleStage {
     render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.lqc.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.lqc.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.lqc.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 
