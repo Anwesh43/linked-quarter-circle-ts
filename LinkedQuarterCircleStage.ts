@@ -1,6 +1,7 @@
 const w : number = window.innerWidth, h : number = window.innerHeight
 const nodes : number = 5
 const k = 4
+const DELAY : number = 10
 class LinkedQuarterCircleStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
@@ -47,14 +48,23 @@ class State {
     scale : number = 0
     dir : number = 0
     prevScale : number = 0
-
+    t : number = 0
     update(cb : Function) {
-        this.scale += (0.1 / k) * this.dir
-        if (Math.abs(this.scale - this.prevScale) > 1) {
-            this.scale = this.prevScale + this.dir
-            this.dir = 0
-            this.prevScale = this.scale
-            cb(this.prevScale)
+        if (this.t == 0) {
+            this.scale += (0.1 / k) * this.dir
+            if (Math.abs(this.scale - this.prevScale) > 1) {
+                this.t++
+            }
+        }
+        else {
+            this.t++
+            if (this.t == DELAY) {
+                this.scale = this.prevScale + this.dir
+                this.dir = 0
+                this.prevScale = this.scale
+                cb(this.prevScale)
+                this.t = 0
+            }
         }
     }
 
